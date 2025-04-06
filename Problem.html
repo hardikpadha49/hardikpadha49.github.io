@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cow Health Monitoring System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --main-bg: #ffffff;
+      --main-text: #222222;
+      --card-bg: #f9f9f9;
+      --highlight: #ffde59;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--main-bg);
+      color: var(--main-text);
+      transition: all 0.3s ease-in-out;
+    }
+
+    .dark-mode {
+      --main-bg: #1a1a1a;
+      --main-text: #f4f4f4;
+      --card-bg: #2a2a2a;
+      --highlight: #ffaa00;
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem;
+      background-color: var(--highlight);
+      color: #000;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    nav {
+      background-color: #f0f0f0;
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      font-weight: bold;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .dark-mode nav {
+      background-color: #2d2d2d;
+    }
+
+    nav a {
+      color: inherit;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .section {
+      max-width: 960px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .alert {
+      background-color: #ffe3e3;
+      border: 1px solid red;
+      color: red;
+      font-weight: bold;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .toggle-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: var(--highlight);
+      border: none;
+      padding: 0.6rem 1rem;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      opacity: 0.7;
+      font-size: 0.9rem;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .page {
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    input, label {
+      display: block;
+      margin-bottom: 0.5rem;
+      width: 100%;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .status-bar {
+      height: 8px;
+      background: linear-gradient(90deg, #4caf50, #ffeb3b, #f44336);
+      background-size: 300% 100%;
+      animation: moveBar 3s linear infinite;
+      border-radius: 10px;
+      margin-top: 0.5rem;
+    }
+
+    @keyframes moveBar {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+  </style>
+</head>
+<body>
+  <button class="toggle-btn" onclick="toggleDarkMode()">Toggle Mode</button>
+  <header>
+    <h1>Cow Health Monitoring System</h1>
+    <p>Keeping your herd healthy with real-time insights 🐄</p>
+  </header>
+
+  <nav>
+    <a onclick="showPage('home')">Home</a>
+    <a onclick="showPage('profiles')">Cow Profiles</a>
+    <a onclick="showPage('alerts')">Alerts</a>
+    <a onclick="showPage('settings')">Settings</a>
+    <a onclick="showPage('interactions')">Interactions</a>
+  </nav>
+
+  <main class="section">
+    <div id="home" class="page">
+      <div class="card">
+        <h2>Dashboard Overview</h2>
+        <p>This system provides real-time health updates and alerts for your cows using mock sensors.</p>
+        <p><strong>Current Time:</strong> <span id="liveClock"></span></p>
+        <canvas id="healthChart" width="400" height="200"></canvas>
+        <div class="status-bar"></div>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <h3>Current Sensor Readings</h3>
+          <ul>
+            <li><strong>Cow 1:</strong> HR: 72 bpm, Temp: 38.5°C</li>
+            <li><strong>Cow 2:</strong> HR: 75 bpm, Temp: 38.7°C</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Health Summary</h3>
+          <ul>
+            <li>2 Cows Monitored</li>
+            <li>1 Health Alert Active</li>
+            <li>Last Check: Today</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>System Status</h3>
+          <p>✅ All systems operational</p>
+          <p>📶 Sensor Connection: Strong</p>
+        </div>
+        <div class="card">
+          <h3>Smart Suggestion (AI)</h3>
+          <p>Consider isolating Cow 2 and checking for infection symptoms. Schedule a vet visit if condition persists.</p>
+        </div>
+        <div class="card">
+          <h3>Quick Actions</h3>
+          <button onclick="alert('Opening report...')">📊 View Report</button>
+          <button onclick="alert('Vet notified!')">🚑 Send Vet Alert</button>
+        </div>
+        <div class="card">
+          <h3>Next Steps</h3>
+          <ul>
+            <li>✅ Review daily vitals</li>
+            <li>☐ Update cow diet</li>
+            <li>☐ Add new cow profile</li>
+            <li>☐ Generate weekly report</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div id="profiles" class="page hidden">
+      <div class="card">
+        <h2>Cow Profiles</h2>
+        <p>Manage and view individual cow health details here.</p>
+        <form>
+          <label for="cowName">Cow Name</label>
+          <input type="text" id="cowName" name="cowName">
+          <label for="age">Age</label>
+          <input type="number" id="age" name="age">
+          <label for="history">Health History</label>
+          <input type="text" id="history" name="history">
+          <button type="submit">Add Profile</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="alerts" class="page hidden">
+      <div class="card alert">
+        <h2>Health Alerts</h2>
+        <p>🚨 Cow 2 shows elevated temperature. Immediate check recommended!</p>
+      </div>
+    </div>
+
+    <div id="settings" class="page hidden">
+      <div class="card">
+        <h2>Settings</h2>
+        <label><input type="checkbox"> Enable Notifications</label>
+        <label><input type="checkbox"> Auto-Sync Data</label>
+      </div>
+    </div>
+
+    <div id="interactions" class="page hidden">
+      <div class="card">
+        <h2>Interactions</h2>
+        <p>🐄 Cow 1 was fed at 8:00 AM</p>
+        <p>🧪 Health check completed at 10:00 AM</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 CowTech Solutions. All rights reserved.
+  </footer>
+
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+    }
+
+    function showPage(pageId) {
+      const pages = document.querySelectorAll('.page');
+      pages.forEach(page => page.classList.add('hidden'));
+      const activePage = document.getElementById(pageId);
+      if (activePage) activePage.classList.remove('hidden');
+    }
+
+    const ctx = document.getElementById('healthChart');
+    if (ctx) {
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+          datasets: [{
+            label: 'Avg Temp (°C)',
+            data: [38.1, 38.3, 38.4, 38.6, 38.7],
+            borderColor: 'rgba(255, 99, 132, 1)',
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: { beginAtZero: false }
+          }
+        }
+      });
+    }
+
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('liveClock').textContent = now.toLocaleTimeString();
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+</body>
+</html>
